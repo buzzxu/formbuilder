@@ -21,7 +21,7 @@ Formbuilder.registerField 'dropdown',
   """
 
   addButton: """
-    <span class="symbol"><span class="fa fa-caret-down"></span></span> Dropdown
+    <span class="symbol"><span class="fa fa-caret-down"></span></span> 下拉菜单
   """
 
   defaultAttributes: (attrs) ->

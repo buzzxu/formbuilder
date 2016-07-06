@@ -64,7 +64,7 @@ class ViewFieldView extends Backbone.View
   duplicate: ->
     attrs = _.clone(@model.attributes)
     delete attrs['id']
-    attrs['label'] += ' Copy'
+    attrs['label'] += ' 复制'
     @parentView.createField attrs, { position: @model.indexInDOM() + 1 }
 
 
@@ -358,9 +358,10 @@ class Formbuilder
   @helpers:
     defaultFieldAttrs: (field_type) ->
       attrs = {}
-      attrs[Formbuilder.options.mappings.LABEL] = 'Untitled'
+      attrs[Formbuilder.options.mappings.LABEL] = '标题'
       attrs[Formbuilder.options.mappings.FIELD_TYPE] = field_type
       attrs[Formbuilder.options.mappings.REQUIRED] = true
+      attrs[Formbuilder.options.mappings.DEFAULT] = 0
       attrs['field_options'] = {}
       Formbuilder.fields[field_type].defaultAttributes?(attrs) || attrs
 
@@ -391,11 +392,13 @@ class Formbuilder
       MINLENGTH: 'field_options.minlength'
       MAXLENGTH: 'field_options.maxlength'
       LENGTH_UNITS: 'field_options.min_max_length_units'
+      DEFAULT: 'field_options.default'
+      STEP: 'field_options.step'
 
     dict:
-      ALL_CHANGES_SAVED: 'All changes saved'
-      SAVE_FORM: 'Save form'
-      UNSAVED_CHANGES: 'You have unsaved changes. If you leave this page, you will lose those changes!'
+      ALL_CHANGES_SAVED: '已保存'
+      SAVE_FORM: '保存表单'
+      UNSAVED_CHANGES: '表单还未保存，如果离开此页面，将丢失此表单'
 
   @fields: {}
   @inputFields: {}

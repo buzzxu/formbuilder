@@ -1,6 +1,6 @@
-Formbuilder.registerField 'radio',
+Formbuilder.registerField 'gender',
 
-  order: 15
+  order: 16
 
   view: """
     <% for (i in (rf.get(Formbuilder.options.mappings.OPTIONS) || [])) { %>
@@ -12,33 +12,23 @@ Formbuilder.registerField 'radio',
       </div>
     <% } %>
 
-    <% if (rf.get(Formbuilder.options.mappings.INCLUDE_OTHER)) { %>
-      <div class='other-option'>
-        <label class='fb-option'>
-          <input type='radio' />
-          Other
-        </label>
-
-        <input type='text' />
-      </div>
-    <% } %>
   """
 
   edit: """
-    <%= Formbuilder.templates['edit/options']({ includeOther: true }) %>
+    <%= Formbuilder.templates['edit/options']() %>
   """
 
   addButton: """
-    <span class="symbol"><span class="fa fa-circle-o"></span></span> 单选
+    <span class="symbol"><span class="fa fa-circle-o"></span></span> 性别
   """
 
   defaultAttributes: (attrs) ->
     # @todo
     attrs.field_options.options = [
-      label: "",
+      label: "男",
       checked: false
     ,
-      label: "",
+      label: "女",
       checked: false
     ]
 
