@@ -70,9 +70,9 @@ module.exports = (grunt) ->
             'bower_components/underscore.mixin.deepExtend/index.js'
             'bower_components/backbone/backbone-min.js'
             'bower_components/backbone-deep-model/src/deep-model.js'
-            'bower_components/sightglass/index.js'
+            # 'bower_components/sightglass/index.js'
             'bower_components/rivets/dist/rivets.min.js'
-            'bower_components/rivets/dist/rivets.bundled.min.js'
+            # 'bower_components/rivets/dist/rivets.bundled.min.js'
           ]
       mobile_friendly:
         files:
@@ -81,7 +81,8 @@ module.exports = (grunt) ->
             'bower_components/ie8-node-enum/index.js'
             'bower_components/jquery.scrollWindowTo/index.js'
             'bower_components/underscore.mixin.deepExtend/index.js'
-            'bower_components/rivets/dist/rivets.js'
+            'bower_components/rivets/dist/rivets.min.js'
+            'bower_components/rivets/dist/rivets.bundled.min.js'
             'bower_components/backbone-deep-model/src/deep-model.js'
           ]
 

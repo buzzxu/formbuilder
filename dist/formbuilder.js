@@ -157,7 +157,7 @@
       var attrs;
       attrs = _.clone(this.model.attributes);
       delete attrs['id'];
-      attrs['label'] += ' Copy';
+      attrs['label'] += ' 复制';
       return this.parentView.createField(attrs, {
         position: this.model.indexInDOM() + 1
       });
