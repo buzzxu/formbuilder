@@ -30,7 +30,8 @@
       },
       publish: function(obj, keypath, value) {
         if (obj.cid) {
-          return obj.set(keypath, value);
+          obj.set(keypath, value);
+          return obj.silder();
         } else {
           return obj[keypath] = value;
         }
@@ -66,6 +67,14 @@
 
     FormbuilderModel.prototype.is_input = function() {
       return Formbuilder.inputFields[this.get(Formbuilder.options.mappings.FIELD_TYPE)] != null;
+    };
+
+    FormbuilderModel.prototype.silder = function() {
+      switch (this.attributes.field_type) {
+        case 'slider':
+        case 'question':
+          return $('#' + this.cid).slider({});
+      }
     };
 
     return FormbuilderModel;
@@ -179,8 +188,10 @@
     EditFieldView.prototype.events = {
       'click .js-add-option': 'addOption',
       'click .js-remove-option': 'removeOption',
+      'click .js-add-table': 'addTr',
+      'click .js-remove-table': 'removeTr',
       'click .js-default-updated': 'defaultUpdated',
-      'input .option-label-input': 'forceRender'
+      'input .option-label-input': 'inputValue'
     };
 
     EditFieldView.prototype.initialize = function(options) {
@@ -195,6 +206,7 @@
       rivets.bind(this.$el, {
         model: this.model
       });
+      this.model.silder();
       return this;
     };
 
@@ -234,6 +246,34 @@
       return this.forceRender();
     };
 
+    EditFieldView.prototype.addTr = function(e) {
+      var $el, i, newOption, options;
+      $el = $(e.currentTarget);
+      i = this.$el.find('.option').index($el.closest('.option'));
+      options = this.model.get(Formbuilder.options.mappings.TABLE) || [];
+      newOption = {};
+      if (i > -1) {
+        options.splice(i + 1, 0, newOption);
+      } else {
+        options.push(newOption);
+      }
+      this.model.set(Formbuilder.options.mappings.TABLE, options);
+      this.model.trigger("change:" + Formbuilder.options.mappings.TABLE);
+      this.forceRender();
+      return this.model.silder();
+    };
+
+    EditFieldView.prototype.removeTr = function(e) {
+      var $el, index, options;
+      $el = $(e.currentTarget);
+      index = this.$el.find(".js-remove-table").index($el);
+      options = this.model.get(Formbuilder.options.mappings.TABLE);
+      options.splice(index, 1);
+      this.model.set(Formbuilder.options.mappings.TABLE, options);
+      this.model.trigger("change:" + Formbuilder.options.mappings.TABLE);
+      return this.forceRender();
+    };
+
     EditFieldView.prototype.defaultUpdated = function(e) {
       var $el;
       $el = $(e.currentTarget);
@@ -241,6 +281,11 @@
         this.$el.find(".js-default-updated").not($el).attr('checked', false).trigger('change');
       }
       return this.forceRender();
+    };
+
+    EditFieldView.prototype.inputValue = function() {
+      this.forceRender();
+      return this.model.silder();
     };
 
     EditFieldView.prototype.forceRender = function() {
@@ -587,6 +632,7 @@
         REQUIRED: 'required',
         ADMIN_ONLY: 'admin_only',
         OPTIONS: 'field_options.options',
+        TABLE: 'field_options.table',
         DESCRIPTION: 'field_options.description',
         INCLUDE_OTHER: 'field_options.include_other_option',
         INCLUDE_BLANK: 'field_options.include_blank_option',
@@ -597,7 +643,11 @@
         MAXLENGTH: 'field_options.maxlength',
         LENGTH_UNITS: 'field_options.min_max_length_units',
         DEFAULT: 'field_options.default',
-        STEP: 'field_options.step'
+        STEP: 'field_options.step',
+        SLIDER_FORMATTER: 'field_options.slider_formatter',
+        SLIDER_IS_VIEWVALUE: 'field_options.slider_isviewvalue',
+        SLIDER_TOOLTIP: 'field_options.slider_tooltip',
+        QUESTION_ONESELF: 'field_options.question_oneself'
       },
       dict: {
         ALL_CHANGES_SAVED: '已保存',
@@ -805,6 +855,20 @@
 }).call(this);
 
 (function() {
+  Formbuilder.registerField('question', {
+    order: 81,
+    view: "\n<button>跳过</button><br><br>\n<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\n>\n<% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>\n  <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>\n<% } %>\n<br><br>\n<table>\n  <% for (i in (rf.get(Formbuilder.options.mappings.TABLE) || [])) { %>\n    <tr>\n      <td><%= rf.get(Formbuilder.options.mappings.TABLE)[i].score %></td>\n      <td><%= rf.get(Formbuilder.options.mappings.TABLE)[i].description %></td>\n    </tr>\n  <% } %>\n</table>\n<br>\n\n<textarea class='rf-size-<%= rf.get(Formbuilder.options.mappings.SIZE) %>'></textarea>",
+    edit: "<%= Formbuilder.templates['edit/question']() %>\n<%= Formbuilder.templates['edit/size']() %>",
+    addButton: "<span class=\"symbol\"><span class=\"fa fa-question\"></span></span> 问题",
+    defaultAttributes: function(attrs) {
+      attrs.field_options.size = 'small';
+      return attrs;
+    }
+  });
+
+}).call(this);
+
+(function() {
   Formbuilder.registerField('radio', {
     order: 15,
     view: "<% for (i in (rf.get(Formbuilder.options.mappings.OPTIONS) || [])) { %>\n  <div>\n    <label class='fb-option'>\n      <input type='radio' <%= rf.get(Formbuilder.options.mappings.OPTIONS)[i].checked && 'checked' %> onclick=\"javascript: return false;\" />\n      <%= rf.get(Formbuilder.options.mappings.OPTIONS)[i].label %>\n    </label>\n  </div>\n<% } %>\n\n<% if (rf.get(Formbuilder.options.mappings.INCLUDE_OTHER)) { %>\n  <div class='other-option'>\n    <label class='fb-option'>\n      <input type='radio' />\n      Other\n    </label>\n\n    <input type='text' />\n  </div>\n<% } %>",
@@ -840,9 +904,9 @@
 (function() {
   Formbuilder.registerField('slider', {
     order: 80,
-    view: "<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\ndata-slider-min=\"<%= rf.get(Formbuilder.options.mappings.MIN) %>\"\ndata-slider-max=\"<%= rf.get(Formbuilder.options.mappings.MAX) %>\"\ndata-slider-step=\"<%= rf.get(Formbuilder.options.mappings.STEP) %>\"\ndata-slider-value=\"<%= rf.get(Formbuilder.options.mappings.DEFAULT) %>\"\ndata-slider-tooltip=\"hide\"\n>",
+    view: "<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\ndata-slider-min=\"<%= rf.get(Formbuilder.options.mappings.MIN) %>\"\ndata-slider-max=\"<%= rf.get(Formbuilder.options.mappings.MAX) %>\"\ndata-slider-step=\"<%= rf.get(Formbuilder.options.mappings.STEP) %>\"\ndata-slider-value=\"<%= rf.get(Formbuilder.options.mappings.DEFAULT) %>\"\ndata-slider-tooltip=\"<%= rf.get(Formbuilder.options.mappings.SLIDER_TOOLTIP) %>\"\n>\n<% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>\n  <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>\n<% } %>",
     edit: "<%= Formbuilder.templates['edit/slider']() %>",
-    addButton: "<span class=\"symbol xu\"><span class=\"fa fa-usd\"></span></span> 滑杆"
+    addButton: "<span class=\"symbol\"><span class=\"fa fa-arrows-h\"></span></span> 滑杆"
   });
 
 }).call(this);
@@ -1043,6 +1107,26 @@ __p += '\r\n\r\n<div class=\'fb-bottom-add\'>\r\n  <a class="js-add-option ' +
 return __p
 };
 
+this["Formbuilder"]["templates"]["edit/question"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<label>\r\n  <input type=\'checkbox\' data-rv-checked=\'model.' +
+((__t = ( Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE )) == null ? '' : __t) +
+'\' />\r\n  是否显示当前值\r\n</label>\r\n<div class=\'fb-edit-section-header\'></div>\r\n<div class=\'option\' data-rv-each-option=\'model.' +
+((__t = ( Formbuilder.options.mappings.TABLE )) == null ? '' : __t) +
+'\'>\r\n  <input type="text" data-rv-input="option:score" class=\'option-label-input\' style="width: 30px"/>\r\n  <input type="text" data-rv-input="option:description" class=\'option-label-input\' />\r\n  <a class="js-add-table ' +
+((__t = ( Formbuilder.options.BUTTON_CLASS )) == null ? '' : __t) +
+'" title="增加行"><i class=\'fa fa-plus-circle\'></i></a>\r\n  <a class="js-remove-table ' +
+((__t = ( Formbuilder.options.BUTTON_CLASS )) == null ? '' : __t) +
+'" title="删除行"><i class=\'fa fa-minus-circle\'></i></a>\r\n</div>\r\n<div class=\'fb-bottom-add\'>\r\n  <a class="js-add-table ' +
+((__t = ( Formbuilder.options.BUTTON_CLASS )) == null ? '' : __t) +
+'">增加行</a>\r\n</div>\r\n';
+
+}
+return __p
+};
+
 this["Formbuilder"]["templates"]["edit/size"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -1059,7 +1143,9 @@ this["Formbuilder"]["templates"]["edit/slider"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '<div class=\'fb-edit-section-header\'>默认值</div>\r\n<input type=\'text\' data-rv-input=\'model.' +
+__p += '<label>\r\n  <input type=\'checkbox\' data-rv-checked=\'model.' +
+((__t = ( Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE )) == null ? '' : __t) +
+'\' />\r\n  是否显示当前值\r\n</label>\r\n<div class=\'fb-edit-section-header\'>默认值</div>\r\n<input type=\'text\' data-rv-input=\'model.' +
 ((__t = ( Formbuilder.options.mappings.DEFAULT )) == null ? '' : __t) +
 '\' style="width: 50px" />\r\n<div class=\'fb-edit-section-header\'>间隔</div>\r\n<input type=\'text\' data-rv-input=\'model.' +
 ((__t = ( Formbuilder.options.mappings.STEP )) == null ? '' : __t) +

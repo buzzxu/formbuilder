@@ -6,6 +6,11 @@ class FormbuilderModel extends Backbone.DeepModel
   is_input: ->
     Formbuilder.inputFields[@get(Formbuilder.options.mappings.FIELD_TYPE)]?
 
+  silder:()->
+    switch @attributes.field_type
+      when 'slider','question'
+        $('#'+@cid).slider({})
+
 
 class FormbuilderCollection extends Backbone.Collection
   initialize: ->
@@ -74,8 +79,10 @@ class EditFieldView extends Backbone.View
   events:
     'click .js-add-option': 'addOption'
     'click .js-remove-option': 'removeOption'
+    'click .js-add-table': 'addTr'
+    'click .js-remove-table': 'removeTr'
     'click .js-default-updated': 'defaultUpdated'
-    'input .option-label-input': 'forceRender'
+    'input .option-label-input': 'inputValue'
 
   initialize: (options) ->
     {@parentView} = options
@@ -84,6 +91,7 @@ class EditFieldView extends Backbone.View
   render: ->
     @$el.html(Formbuilder.templates["edit/base#{if !@model.is_input() then '_non_input' else ''}"]({rf: @model}))
     rivets.bind @$el, { model: @model }
+    @model.silder()
     return @
 
   remove: ->
@@ -116,14 +124,39 @@ class EditFieldView extends Backbone.View
     @model.trigger "change:#{Formbuilder.options.mappings.OPTIONS}"
     @forceRender()
 
+  addTr: (e) ->
+    $el = $(e.currentTarget)
+    i = @$el.find('.option').index($el.closest('.option'))
+    options = @model.get(Formbuilder.options.mappings.TABLE) || []
+    newOption = {}
+    if i > -1
+      options.splice(i + 1, 0, newOption)
+    else
+      options.push newOption
+    @model.set Formbuilder.options.mappings.TABLE, options
+    @model.trigger "change:#{Formbuilder.options.mappings.TABLE}"
+    @forceRender()
+    @model.silder()
+
+  removeTr: (e) ->
+    $el = $(e.currentTarget)
+    index = @$el.find(".js-remove-table").index($el)
+    options = @model.get Formbuilder.options.mappings.TABLE
+    options.splice index, 1
+    @model.set Formbuilder.options.mappings.TABLE, options
+    @model.trigger "change:#{Formbuilder.options.mappings.TABLE}"
+    @forceRender()
+
   defaultUpdated: (e) ->
     $el = $(e.currentTarget)
 
     unless @model.get(Formbuilder.options.mappings.FIELD_TYPE) == 'checkboxes' # checkboxes can have multiple options selected
       @$el.find(".js-default-updated").not($el).attr('checked', false).trigger('change')
-
     @forceRender()
 
+  inputValue: ->
+    @forceRender()
+    @model.silder()
   forceRender: ->
     @model.trigger('change')
 
@@ -137,7 +170,6 @@ class BuilderView extends Backbone.View
     'click .fb-add-field-types a': 'addField'
     'mouseover .fb-add-field-types': 'lockLeftWrapper'
     'mouseout .fb-add-field-types': 'unlockLeftWrapper'
-
   initialize: (options) ->
     {selector, @formBuilder, @bootstrapData} = options
 
@@ -236,6 +268,8 @@ class BuilderView extends Backbone.View
     # Catch-all: add to bottom
     else
       @$responseFields.append view.render().el
+
+
 
   setSortable: ->
     @$responseFields.sortable('destroy') if @$responseFields.hasClass('ui-sortable')
@@ -383,6 +417,7 @@ class Formbuilder
       REQUIRED: 'required'
       ADMIN_ONLY: 'admin_only'
       OPTIONS: 'field_options.options'
+      TABLE: 'field_options.table'
       DESCRIPTION: 'field_options.description'
       INCLUDE_OTHER: 'field_options.include_other_option'
       INCLUDE_BLANK: 'field_options.include_blank_option'
@@ -394,6 +429,10 @@ class Formbuilder
       LENGTH_UNITS: 'field_options.min_max_length_units'
       DEFAULT: 'field_options.default'
       STEP: 'field_options.step'
+      SLIDER_FORMATTER: 'field_options.slider_formatter'
+      SLIDER_IS_VIEWVALUE: 'field_options.slider_isviewvalue'
+      SLIDER_TOOLTIP: 'field_options.slider_tooltip'
+      QUESTION_ONESELF:'field_options.question_oneself'
 
     dict:
       ALL_CHANGES_SAVED: '已保存'

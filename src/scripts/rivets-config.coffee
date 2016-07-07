@@ -23,5 +23,6 @@ rivets.configure
     publish: (obj, keypath, value) ->
       if obj.cid
         obj.set(keypath, value);
+        obj.silder()
       else
         obj[keypath] = value

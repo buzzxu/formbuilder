@@ -12,8 +12,11 @@ Formbuilder.registerField 'slider',
     data-slider-max="<%= rf.get(Formbuilder.options.mappings.MAX) %>"
     data-slider-step="<%= rf.get(Formbuilder.options.mappings.STEP) %>"
     data-slider-value="<%= rf.get(Formbuilder.options.mappings.DEFAULT) %>"
-    data-slider-tooltip="hide"
+    data-slider-tooltip="<%= rf.get(Formbuilder.options.mappings.SLIDER_TOOLTIP) %>"
     >
+    <% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>
+      <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>
+    <% } %>
   """
 
   edit: """
@@ -21,5 +24,5 @@ Formbuilder.registerField 'slider',
   """
 
   addButton: """
-    <span class="symbol xu"><span class="fa fa-usd"></span></span> 滑杆
+    <span class="symbol"><span class="fa fa-arrows-h"></span></span> 滑杆
   """

@@ -68,11 +68,12 @@ module.exports = (grunt) ->
             'bower_components/jquery.scrollWindowTo/index.js'
             'bower_components/underscore/underscore-min.js'
             'bower_components/underscore.mixin.deepExtend/index.js'
-            'bower_components/backbone/backbone-min.js'
+            'bower_components/backbone/backbone.js'
             'bower_components/backbone-deep-model/src/deep-model.js'
             # 'bower_components/sightglass/index.js'
-            'bower_components/rivets/dist/rivets.min.js'
+            'bower_components/rivets/dist/rivets.js'
             # 'bower_components/rivets/dist/rivets.bundled.min.js'
+            'bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js'
           ]
       mobile_friendly:
         files:
@@ -90,7 +91,7 @@ module.exports = (grunt) ->
       dist:
         files:
           '<%= distFolder %>/formbuilder-min.css': '<%= distFolder %>/formbuilder.css'
-          '<%= vendorFolder %>/css/vendor.css': 'bower_components/font-awesome/css/font-awesome.css'
+          '<%= vendorFolder %>/css/vendor.css': 'bower_components/font-awesome/css/font-awesome.min.css'
 
     stylus:
       all:

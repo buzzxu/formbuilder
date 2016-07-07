@@ -218,13 +218,15 @@ $editing-border = darken($editing-bg, 7%)
 }
 
 .fb-field-wrapper .actions-wrapper a.js-duplicate,
-.fb-edit-field-wrapper .js-add-option {
+.fb-edit-field-wrapper .js-add-option,
+.fb-edit-field-wrapper .js-add-table {
   background-color: $affirmitive-color;
   border: none;
 }
 
 .fb-field-wrapper .actions-wrapper a.js-clear,
-.fb-edit-field-wrapper .js-remove-option {
+.fb-edit-field-wrapper .js-remove-option,
+.fb-edit-field-wrapper .js-remove-table {
   background-color: $negative-color;
   border: none;
 }
@@ -322,7 +324,7 @@ $editing-border = darken($editing-bg, 7%)
   font-weight: 700;
 }
 
-.fb-edit-field-wrapper .js-add-option,.fb-edit-field-wrapper .js-remove-option {
+.fb-edit-field-wrapper .js-add-option,.fb-edit-field-wrapper .js-remove-option,.fb-edit-field-wrapper .js-add-table,.fb-edit-field-wrapper .js-remove-table {
   padding: 3px 6px;
 }
 
@@ -359,17 +361,17 @@ $editing-border = darken($editing-bg, 7%)
   width: 100%;
 }
 
-.response-field-paragraph textarea.rf-size-small {
+.response-field-paragraph textarea.rf-size-small,.response-field-question textarea.rf-size-small {
   width: 200px;
   min-height: 60px;
 }
 
-.response-field-paragraph textarea.rf-size-medium {
+.response-field-paragraph textarea.rf-size-medium,.response-field-question textarea.rf-size-medium {
   width: 400px;
   min-height: 100px;
 }
 
-.response-field-paragraph textarea.rf-size-large {
+.response-field-paragraph textarea.rf-size-large,.response-field-question textarea.rf-size-large {
   width: 100%;
   min-height: 200px;
 }

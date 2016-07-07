@@ -1,0 +1,14 @@
+<label>
+  <input type='checkbox' data-rv-checked='model.<%= Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE %>' />
+  是否显示当前值
+</label>
+<div class='fb-edit-section-header'></div>
+<div class='option' data-rv-each-option='model.<%= Formbuilder.options.mappings.TABLE %>'>
+  <input type="text" data-rv-input="option:score" class='option-label-input' style="width: 30px"/>
+  <input type="text" data-rv-input="option:description" class='option-label-input' />
+  <a class="js-add-table <%= Formbuilder.options.BUTTON_CLASS %>" title="增加行"><i class='fa fa-plus-circle'></i></a>
+  <a class="js-remove-table <%= Formbuilder.options.BUTTON_CLASS %>" title="删除行"><i class='fa fa-minus-circle'></i></a>
+</div>
+<div class='fb-bottom-add'>
+  <a class="js-add-table <%= Formbuilder.options.BUTTON_CLASS %>">增加行</a>
+</div>

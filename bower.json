@@ -29,6 +29,7 @@
     "backbone-deep-model": "~0.10.4",
     "rivets": "~0.5.13",
     "font-awesome": "~4.6.3",
-    "sightglass": "~0.2.4"
+    "sightglass": "~0.2.4",
+    "seiyria-bootstrap-slider": "~7.1.1"
   }
 }
