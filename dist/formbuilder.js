@@ -609,7 +609,7 @@
         attrs[Formbuilder.options.mappings.LABEL] = '标题';
         attrs[Formbuilder.options.mappings.FIELD_TYPE] = field_type;
         attrs[Formbuilder.options.mappings.REQUIRED] = true;
-        attrs[Formbuilder.options.mappings.DEFAULT] = 0;
+        attrs[Formbuilder.options.mappings.SLIDER_TOOLTIP] = 'hide';
         attrs['field_options'] = {};
         return (typeof (base = Formbuilder.fields[field_type]).defaultAttributes === "function" ? base.defaultAttributes(attrs) : void 0) || attrs;
       },
@@ -857,7 +857,7 @@
 (function() {
   Formbuilder.registerField('question', {
     order: 81,
-    view: "\n<button>跳过</button><br><br>\n<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\n>\n<% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>\n  <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>\n<% } %>\n<br><br>\n<table>\n  <% for (i in (rf.get(Formbuilder.options.mappings.TABLE) || [])) { %>\n    <tr>\n      <td><%= rf.get(Formbuilder.options.mappings.TABLE)[i].score %></td>\n      <td><%= rf.get(Formbuilder.options.mappings.TABLE)[i].description %></td>\n    </tr>\n  <% } %>\n</table>\n<br>\n\n<textarea class='rf-size-<%= rf.get(Formbuilder.options.mappings.SIZE) %>'></textarea>",
+    view: "<% if (rf.get(Formbuilder.options.mappings.REQUIRED)) { %>\n<button class=\"btn btn-primary\" type=\"button\">跳过</button> <br>\n<% } %>\n<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\ndata-slider-value=\"0\"\ndata-slider-tooltip=\"hide\"\n>\n<% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>\n  <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>\n<% } %>\n<br><br>\n<table >\n  <% for (i in (rf.get(Formbuilder.options.mappings.TABLE) || [])) { %>\n    <tr>\n      <td><%= rf.get(Formbuilder.options.mappings.TABLE)[i].score %></td>\n      <td><%= rf.get(Formbuilder.options.mappings.TABLE)[i].description %></td>\n    </tr>\n  <% } %>\n</table>\n<br>\n<div class='fb-edit-section-header'>评论</div>\n<textarea class='rf-size-<%= rf.get(Formbuilder.options.mappings.SIZE) %>'></textarea>",
     edit: "<%= Formbuilder.templates['edit/question']() %>\n<%= Formbuilder.templates['edit/size']() %>",
     addButton: "<span class=\"symbol\"><span class=\"fa fa-question\"></span></span> 问题",
     defaultAttributes: function(attrs) {
@@ -904,7 +904,7 @@
 (function() {
   Formbuilder.registerField('slider', {
     order: 80,
-    view: "<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\ndata-slider-min=\"<%= rf.get(Formbuilder.options.mappings.MIN) %>\"\ndata-slider-max=\"<%= rf.get(Formbuilder.options.mappings.MAX) %>\"\ndata-slider-step=\"<%= rf.get(Formbuilder.options.mappings.STEP) %>\"\ndata-slider-value=\"<%= rf.get(Formbuilder.options.mappings.DEFAULT) %>\"\ndata-slider-tooltip=\"<%= rf.get(Formbuilder.options.mappings.SLIDER_TOOLTIP) %>\"\n>\n<% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>\n  <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>\n<% } %>",
+    view: "<input\nid=\"<%=rf.cid %>\"\ntype=\"text\"\nname=\"<%=rf.cid %>\"\ndata-provide=\"slider\"\ndata-slider-min=\"<%= rf.get(Formbuilder.options.mappings.MIN) %>\"\ndata-slider-max=\"<%= rf.get(Formbuilder.options.mappings.MAX) %>\"\ndata-slider-step=\"<%= rf.get(Formbuilder.options.mappings.STEP) %>\"\ndata-slider-value=\"<%= rf.get(Formbuilder.options.mappings.DEFAULT) %>\"\ndata-slider-tooltip=\"hide\"\n>\n<% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>\n  <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>\n<% } %>",
     edit: "<%= Formbuilder.templates['edit/slider']() %>",
     addButton: "<span class=\"symbol\"><span class=\"fa fa-arrows-h\"></span></span> 滑杆"
   });

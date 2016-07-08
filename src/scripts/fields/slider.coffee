@@ -12,7 +12,7 @@ Formbuilder.registerField 'slider',
     data-slider-max="<%= rf.get(Formbuilder.options.mappings.MAX) %>"
     data-slider-step="<%= rf.get(Formbuilder.options.mappings.STEP) %>"
     data-slider-value="<%= rf.get(Formbuilder.options.mappings.DEFAULT) %>"
-    data-slider-tooltip="<%= rf.get(Formbuilder.options.mappings.SLIDER_TOOLTIP) %>"
+    data-slider-tooltip="hide"
     >
     <% if (rf.get(Formbuilder.options.mappings.SLIDER_IS_VIEWVALUE)) { %>
       <span>当前值: <span><%= rf.get(Formbuilder.options.mappings.DEFAULT) %></span></span>

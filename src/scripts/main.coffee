@@ -395,7 +395,7 @@ class Formbuilder
       attrs[Formbuilder.options.mappings.LABEL] = '标题'
       attrs[Formbuilder.options.mappings.FIELD_TYPE] = field_type
       attrs[Formbuilder.options.mappings.REQUIRED] = true
-      attrs[Formbuilder.options.mappings.DEFAULT] = 0
+      attrs[Formbuilder.options.mappings.SLIDER_TOOLTIP] = 'hide'
       attrs['field_options'] = {}
       Formbuilder.fields[field_type].defaultAttributes?(attrs) || attrs
 
